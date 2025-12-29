@@ -5,12 +5,30 @@ namespace App\Http\Controllers;
 use App\Models\ShortUrl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 
 class UrlController extends Controller
 {
- 
+ public function welcome(Request $request)
+{
+    $filter = $request->get('filter');
+
+    $query = ShortUrl::query();
+
+    if ($filter === 'today') {
+        $query->whereDate('created_at', Carbon::today());
+    } elseif ($filter === 'week') {
+        $query->whereBetween('created_at', [Carbon::now()->subDays(7), Carbon::now()]);
+    } elseif ($filter === 'month') {
+        $query->whereMonth('created_at', Carbon::now()->month);
+    }
+
+    $urls = $query->latest()->paginate(10)->withQueryString();
+
+    return view('welcome', compact('urls', 'filter'));
+}
 public function index()
 {
     $user = auth()->user();
