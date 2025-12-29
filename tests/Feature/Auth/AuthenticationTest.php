@@ -3,6 +3,7 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -17,18 +18,21 @@ class AuthenticationTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_users_can_authenticate_using_the_login_screen(): void
-    {
-        $user = User::factory()->create();
+   public function test_users_can_authenticate_using_the_login_screen(): void
+{
+    $user = User::factory()->create([
+        'password' => Hash::make('password'),
+        'is_active' => true, // 👈 make the user active for test
+    ]);
 
-        $response = $this->post('/login', [
-            'email' => $user->email,
-            'password' => 'password',
-        ]);
+    $response = $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'password', // plain password for login
+    ]);
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
-    }
+    $this->assertAuthenticated('web'); // 👈 specify the guard
+    $response->assertRedirect(route('dashboard', absolute: false));
+}
 
     public function test_users_can_not_authenticate_with_invalid_password(): void
     {
