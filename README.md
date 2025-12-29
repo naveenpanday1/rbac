@@ -53,16 +53,15 @@ A role-based URL Shortener web application built with **Laravel**, implementing
 ## ⚙️ Installation
 
 ```bash
-git clone https://github.com/your-username/url-shortener.git
-cd url-shortener
+git clone https://github.com/naveenpanday1/rbac.git
+cd rbac
 composer install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate:fresh --seed
+npm run build
 php artisan serve
 
-##  Demo Login Credentials
 ### SuperAdmin
-
 Email: superadmin@demo.com  
 Password: demo123

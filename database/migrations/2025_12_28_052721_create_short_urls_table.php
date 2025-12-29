@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('company_id')->constrained();
             $table->foreignId('created_by')->constrained('users');
             $table->string('original_url');
-            $table->unsignedBigInteger('hits')->default(0);
             $table->string('short_code')->unique();
             $table->timestamp('expires_at')->nullable(); 
             $table->timestamps();
