@@ -8,22 +8,15 @@ use App\Http\Controllers\UrlController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\InviteController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
+Route::get('/', [UrlController::class, 'welcome'])->name('welcome');
 Route::middleware(['auth'])->group(function () {
-
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard/download', [HomeController::class, 'download'])
-        ->name('dashboard.download');
-
+    Route::get('/dashboard/download', [HomeController::class, 'download'])->name('dashboard.download');
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('users.index');
         Route::get('/create', [UserController::class, 'create'])->name('users.create');
         Route::post('/', [UserController::class, 'store'])->name('users.store');
     });
-
     Route::prefix('urls')->group(function () {
         Route::get('/', [UrlController::class, 'index'])->name('urls.index');
         Route::get('/create', [UrlController::class, 'create'])->name('urls.create');
