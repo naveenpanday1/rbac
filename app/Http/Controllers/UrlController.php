@@ -33,30 +33,28 @@ public function index()
 {
     $user = auth()->user();
     $totalHits = 0;
-
     if ($user->isSuperAdmin()) {
-        $urls = new LengthAwarePaginator([], 0, 10);
+        $urls = ShortUrl::with('user')
+            ->latest()
+            ->paginate(10);
         $totalHits = ShortUrl::sum('hits');
-    }
-    elseif ($user->isAdmin()) {
-        $urls = ShortUrl::with(['user'])
-            ->where('company_id', '!=', $user->company_id)
+    } elseif ($user->isAdmin()) {
+        $urls = ShortUrl::with('user')
+            ->where('company_id', $user->company_id)
             ->latest()
             ->paginate(10);
-        $totalHits = ShortUrl::where('company_id', '!=', $user->company_id)
+        $totalHits = ShortUrl::where('company_id', $user->company_id)
             ->sum('hits');
-    }
-    else {
-        $urls = ShortUrl::with(['user'])
-            ->where('created_by', '!=', $user->id)
+    } else {
+        $urls = ShortUrl::with('user')
+            ->where('created_by', $user->id)
             ->latest()
             ->paginate(10);
-        $totalHits = ShortUrl::where('created_by', '!=', $user->id)
+        $totalHits = ShortUrl::where('created_by', $user->id)
             ->sum('hits');
     }
     return view('urls.index', compact('urls', 'totalHits'));
 }
-
 
     public function create()
     {
